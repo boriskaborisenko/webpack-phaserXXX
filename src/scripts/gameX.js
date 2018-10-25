@@ -49,7 +49,13 @@ function preload (){
     this.load.image('holeup', 'public/assets/holeup.png');
     this.load.image('holedown', 'public/assets/holedown.png');
     this.load.image('bg', 'public/assets/bg.png');
-    this.load.spritesheet('bird', 'public/assets/bird.png', { frameWidth: 36, frameHeight: 26 });
+    this.load.image('bgb1', 'public/assets/bgb1.png');
+    this.load.image('bgb2', 'public/assets/bgb2.png');
+    this.load.image('bgb3', 'public/assets/bgb3.png');
+    this.load.image('bgsky', 'public/assets/bgsky.png');
+    this.load.image('bggross', 'public/assets/bggross.png');
+
+    this.load.spritesheet('bird', 'public/assets/bird2.png', { frameWidth: 43, frameHeight: 30 });
 }
 
 function create (){
@@ -60,7 +66,14 @@ function create (){
 
    
 
-    this.backgound = this.add.tileSprite(0, 0, w, 500, 'bg').setOrigin(0);
+    //this.backgound = this.add.tileSprite(0, 0, w, 500, 'bg').setOrigin(0);
+    this.bgsky = this.add.tileSprite(0, 0, w, 500, 'bgsky').setOrigin(0);
+    this.bgb1 = this.add.tileSprite(0, 0, w, 500, 'bgb1').setOrigin(0);
+    this.bgb2 = this.add.tileSprite(0, 0, w, 500, 'bgb2').setOrigin(0);
+    this.bgb3 = this.add.tileSprite(0, 0, w, 500, 'bgb3').setOrigin(0);
+    
+    this.bggross = this.add.tileSprite(0, 0, w, 500, 'bggross').setOrigin(0);
+    
     this.line = this.add.tileSprite(0, 500, w, 400, 'line').setOrigin(0).setDepth(100);
 
     this.floor = this.physics.add.image(0, 500, 'clear').setOrigin(0).setDisplaySize(w, 20); 
@@ -269,7 +282,12 @@ function update (){
     if(!freeze){
         //this.player.setGravity(0, 600);
         this.line.tilePositionX += SPEED_A;
-        this.backgound.tilePositionX += 0.5;
+        //this.backgound.tilePositionX += 0.5;
+        this.bgb1.tilePositionX += 0.1;
+        this.bgb2.tilePositionX += 0.25;
+        this.bgb3.tilePositionX += 0.45;
+        this.bgsky.tilePositionX += 0.05;
+        this.bggross.tilePositionX += 0.6;
         this.pipes.children.entries.map(item => item.x -= SPEED_A);
         this.pointpipes.children.entries.map(item => item.x -= SPEED_A);
             
@@ -290,7 +308,13 @@ function update (){
     }
     if(startscreen){
         this.line.tilePositionX += SPEED_A;
-        this.backgound.tilePositionX += 0.5; 
+        //this.backgound.tilePositionX += 0.5; 
+        this.bgb1.tilePositionX += 0.1;
+        this.bgb2.tilePositionX += 0.25;
+        this.bgb3.tilePositionX += 0.45;
+        this.bgsky.tilePositionX += 0.05;
+        this.bggross.tilePositionX += 0.6;
+
     }
     
 }
