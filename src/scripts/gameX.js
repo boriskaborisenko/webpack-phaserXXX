@@ -40,6 +40,10 @@ var GEN_TIME = 2400;
 
 function preload (){
     //this.load.audio('song', 'public/assets/fbremix.mp3');
+    this.load.audio('sfx-fly', 'public/assets/sfx/fly.wav');
+    this.load.audio('sfx-coin', 'public/assets/sfx/coin.wav');
+    this.load.audio('sfx-die', 'public/assets/sfx/die.wav');
+
     this.load.image('ground', 'public/assets/platform.png');
     this.load.image('line', 'public/assets/line.png');
     this.load.image('star', 'public/assets/star.png');
@@ -60,6 +64,9 @@ function preload (){
 
 function create (){
     //this.music = this.sound.add('song');
+    this.sfxfly = this.sound.add('sfx-fly');
+    this.sfxcoin = this.sound.add('sfx-coin');
+    this.sfxdie = this.sound.add('sfx-die');
     self = this;
     this.score = this.add.text(16, 16, 'Score: 0', { fontFamily: 'Mali', fontSize: '24px', fill: '#ffffff' });
     this.score.setDepth(100);
@@ -162,10 +169,12 @@ function destroyPipe(clear, pipe){
 }
 
 function deadBird(player){
+    this.sfxdie.play();
     //dead = true;
     //self.music.stop();
-   // player.angle = 40;
-    //freeze = true;
+    player.angle = 40;
+    freeze = true;
+    
     //setTimeout(()=>{startAgain();}, 2000);
 }
 
@@ -223,6 +232,7 @@ function startAgain(){
 function pointPipe(player, pointpipe){
     mypoints++;
     this.score.text = 'Score: '+mypoints;
+    this.sfxcoin.play();
     pointpipe.destroy();
 }
 
@@ -296,6 +306,7 @@ function update (){
                 this.player.play('fly', true);
                 moveMouse = false;
                 this.player.angle = -10;
+                this.sfxfly.play();
             }
             
             
