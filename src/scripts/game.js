@@ -18,6 +18,7 @@ var config = {
     }
 };
 
+var gogame = false;
 var birddie = false;
 var self;
 var player;
@@ -53,10 +54,32 @@ function preload ()
 
 function create ()
 {
-    var music = this.sound.add('song');
-    music.play({loop:true});
-
     self = this;
+    var music = this.sound.add('song');
+    //music.play({loop:true});
+
+    this.restart = this.add.text(206, 16, 'restart', { fontFamily: 'Mali', fontSize: '32px', fill: '#fff' });
+    this.restart.setDepth(100);
+    this.restart.setInteractive();
+    this.restart.on('pointerdown', function (pointer) {
+        restartGame();
+    });
+
+    this.start = this.add.text(376, 16, 'start', { fontFamily: 'Mali', fontSize: '32px', fill: '#fff' });
+    this.start.setDepth(100);
+    this.start.setInteractive();
+    this.start.on('pointerdown', function (pointer) {
+        startGame();
+    });
+
+    this.pause = this.add.text(576, 16, 'pause', { fontFamily: 'Mali', fontSize: '32px', fill: '#fff' });
+    this.pause.setDepth(100);
+    this.pause.setInteractive();
+    this.pause.on('pointerdown', function (pointer) {
+        pauseGame();
+    });
+
+    
     this.score = this.add.text(16, 16, 'Score: 0', { fontFamily: 'Mali', fontSize: '32px', fill: '#fff' });
     this.score.setDepth(100);
     //this.add.image(0, 0, 'bg').setOrigin(0);
@@ -79,12 +102,19 @@ function create ()
         repeat: 0
     });
     
+    this.anims.create({
+        key: 'flyinf',
+        frames: this.anims.generateFrameNumbers('bird', { start: 0, end: 2 }),
+        frameRate: 10,
+        repeat: -1
+    });
 
     //  Player physics properties. Give the little guy a slight bounce.
     //player.setBounce(0.2);
     player.setGravity(0, 600);
     player.setDepth(2);
     player.setCollideWorldBounds(true); 
+    player.play('flyinf', true);
     
     keys = this.input.keyboard.addKeys('Space');
     this.input.on('pointerup', function(){
@@ -161,7 +191,7 @@ function addPipes(type, vel, x, y) {
 } 
 
 function addPipeRows() {
-    if(!birddie){
+    if(!birddie && gogame){
     let hole = Math.floor(Math.random() * 4) + 2;
     let type;
     
@@ -186,34 +216,51 @@ function addPipeRows() {
             
             addPipes(type, -300, 900, i * 60 + 10);
         }
+    }else{
+        console.log('dont create pipes');
     }
     
 }
 
+function restartGame(){
+    console.log('RESTART GAME');
+}
+
+function startGame(){
+    //player.stop();
+    gogame = true;
+}
+
+function pauseGame(){
+    //player.stop();
+    gogame = false;
+    self.pipes.children.entries.map(item=>item.setVelocityX(0));
+    self.pointpipes.children.entries.map(item=>item.setVelocityX(0));
+    console.log(self);
+}
+
 function update(){
+    if(gogame){
+        if( !birddie){
+            if(keys.Space.isDown || moveMouse){
+                    player.setVelocityY(-200);
+                    player.play('fly', true);
+                    moveMouse = false;
+                    player.angle = -10;
+                }
+                if(!playerdirection){
+                    player.angle += 0.5;
+                }
 
-    if ( !birddie){
-
-    
-        if(keys.Space.isDown || moveMouse){
-            player.setVelocityY(-200);
-            player.play('fly', true);
-            moveMouse = false;
-            player.angle = -10;
-        }
-        if(!playerdirection){
-            player.angle += 0.5;
-        }
-
+            }else{
+                player.angle = 45;
+                player.setVelocityY(400);
+                //player.stop('fly', true); 
+            }
     }else{
-        player.angle = 45;
-        player.setVelocityY(400);
-        //player.stop('fly', true); 
+        console.log('no start');
+        player.y = 250;
     }
-    
-        
-    
-    
 }
 
 
