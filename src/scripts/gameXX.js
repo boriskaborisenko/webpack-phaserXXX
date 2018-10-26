@@ -3,7 +3,8 @@ const h = window.innerHeight;
 var config = {
     type: Phaser.AUTO,
     parent: 'game',
-    backgroundColor: '#DDD897',
+    //backgroundColor: '#DDD897',
+    backgroundColor: '#138792',
     width: w,
     height: h,
     physics: {
@@ -24,7 +25,6 @@ var game = new Phaser.Game(config);
 var self;
 
 
-var keys;
 var moveMouse;
 var playerdirection;
 var mypoints = 0;
@@ -34,7 +34,29 @@ var freeze = true;
 var startscreen = true;
 var dead = false;
 var endscreen = false;
+var allowclick = true;
 
+function calcSize(){
+    if(h<=480){
+      return {top:-50};
+    }
+    if(h>480){
+      return {top:(h-600)/2};
+    }
+}
+
+var mute = false;
+
+var cal = calcSize();
+var autoH = cal.top;
+var birdleft = 100;
+var birdpos = 250+autoH;
+
+var allBlocks = 500+autoH;
+var howBlocks = (allBlocks)/60;
+var fB = howBlocks/3;
+var lB = howBlocks - fB;
+var calb = {a:Math.round(howBlocks), b:Math.ceil(fB), c:Math.floor(lB)};
 
 var SPEED_A = 3.4;
 var GEN_TIME = Phaser.Math.Between(2400, 2400);
@@ -45,14 +67,14 @@ function preload (){
 
             var progressBar = this.add.graphics();
             var progressBox = this.add.graphics();
-            progressBox.fillStyle(0x222222, 0.6);
-            progressBox.fillRect(w/2-160, h/2-25, 320, 50);
+            progressBox.fillStyle(0x222222, 0.2);
+            progressBox.fillRect(w/2-150, h/2-15, 300, 30);
             
             var width = this.cameras.main.width;
             var height = this.cameras.main.height;
             var loadingText = this.make.text({
                 x: w/2,
-                y: h/2 - 50,
+                y: h/2 - 36,
                 text: 'Loading',
                 style: {
                     font: '20px Black Ops One',
@@ -70,15 +92,15 @@ function preload (){
                     fill: '#ffffff'
                 }
             });
-            percentText.setOrigin(0.5, 0.5);
+            percentText.setOrigin(0.5, 0.5).setDepth(30);
             
  
             
             this.load.on('progress', function (value) {
                 percentText.setText(parseInt(value * 100) + '%');
                 progressBar.clear();
-                progressBar.fillStyle(0xffffff, 1);
-                progressBar.fillRect(w/2-150, h/2-15, 300 * value, 30);
+                progressBar.fillStyle(0x8DCC61, 1);
+                progressBar.fillRect(w/2-145, h/2-12.5, 290 * value, 25).setDepth(10);
             });
             
             
@@ -94,15 +116,17 @@ function preload (){
 
     //PRELOADER
 
-    this.load.audio('song', 'public/assets/fbremix.mp3');
+    this.load.audio('song', 'public/assets/sfx/theme.wav');
     this.load.audio('sfx-fly', 'public/assets/sfx/fly.wav');
     this.load.audio('sfx-coin', 'public/assets/sfx/coin.wav');
     this.load.audio('sfx-die', 'public/assets/sfx/die.wav');
 
+    this.load.image('soundwaves', 'public/assets/soundON.png');
+    this.load.image('sound', 'public/assets/soundOFF.png');
+
     this.load.image('ground', 'public/assets/platform.png');
     this.load.image('line', 'public/assets/line.png');
-    this.load.image('star', 'public/assets/star.png');
-    this.load.image('bomb', 'public/assets/bomb.png');
+    this.load.image('clear', 'public/assets/clear.png');
     this.load.image('block', 'public/assets/block.png');
     this.load.image('hole', 'public/assets/hole.png');
     this.load.image('holeup', 'public/assets/holeup.png');
@@ -122,24 +146,34 @@ function preload (){
 
 function create (){
     self = this;
+
     
     this.sfxfly = this.sound.add('sfx-fly');
     this.sfxcoin = this.sound.add('sfx-coin');
     this.sfxdie = this.sound.add('sfx-die');
     this.song = this.sound.add('song');
 
-    this.score = this.add.text(0, 40, '0', { fontFamily: 'Black Ops One', fontSize: '24px', fill: '#ffffff' });
+    this.taptoplay = this.add.text(0, birdpos-20, 'tap to play', { fontFamily: 'Black Ops One', fontSize: '32px', fill: '#ffffff' });
+    this.taptoplay.setDepth(10);
+    this.taptoplay.setAlpha(0.4);
+    this.taptoplay.x = (w/2 - this.taptoplay.displayWidth/2)+40;
+
+    this.score = this.add.text(0, 40, '0', { fontFamily: 'Black Ops One', fontSize: '56px', fill: '#ffffff' });
     this.score.setDepth(221);
     this.score.x = w/2 - this.score.displayWidth/2;
 
-    this.bgsky = this.add.tileSprite(0, 0, w, 500, 'bgsky').setOrigin(0);
-    this.bgb1 = this.add.tileSprite(0, 0, w, 500, 'bgb1').setOrigin(0);
-    this.bgb2 = this.add.tileSprite(0, 0, w, 500, 'bgb2').setOrigin(0);
-    this.bgb3 = this.add.tileSprite(0, 0, w, 500, 'bgb3').setOrigin(0);
-    this.bggross = this.add.tileSprite(0, 0, w, 500, 'bggross').setOrigin(0);
-    this.line = this.add.tileSprite(0, 500, w, 400, 'line').setOrigin(0).setDepth(100);
-    this.floor = this.physics.add.image(0, 500, 'clear').setOrigin(0).setDisplaySize(w, 20); 
+    this.bgsky = this.add.tileSprite(0, 0+autoH, w, 500, 'bgsky').setOrigin(0);
+    this.bgb1 = this.add.tileSprite(0, 0+autoH, w, 500, 'bgb1').setOrigin(0);
+    this.bgb2 = this.add.tileSprite(0, 0+autoH, w, 500, 'bgb2').setOrigin(0);
+    this.bgb3 = this.add.tileSprite(0, 0+autoH, w, 500, 'bgb3').setOrigin(0);
+    this.bggross = this.add.tileSprite(0, 0+autoH, w, 500, 'bggross').setOrigin(0);
+    this.line = this.add.tileSprite(0, 500+autoH, w, 400, 'line').setOrigin(0).setDepth(100);
+    this.floor = this.physics.add.image(0, 500+autoH, 'clear').setOrigin(0).setDisplaySize(w, 10); 
+    
+
     this.floor.body.immovable = true;
+
+    
 
     this.clear = this.physics.add.image(-90, 0, 'clear').setOrigin(0).setDisplaySize(1, h); 
     this.pipes = this.add.group();
@@ -152,7 +186,7 @@ function create (){
             loop: true
         }); 
         
-        this.player = this.physics.add.sprite(w/2-100, 250, 'bird');
+        this.player = this.physics.add.sprite(w/2-birdleft, birdpos, 'bird');
         this.player.setDepth(150);
         
         this.anims.create({
@@ -173,29 +207,58 @@ function create (){
         this.physics.add.overlap(this.clear, this.pointpipes.getChildren(), destroyPipe, null, this); 
         this.physics.add.overlap(this.player, this.pointpipes.children.entries, pointPipe, null, this);
 
-        this.physics.add.overlap(this.player, this.pipes.getChildren(), deadBird, null, this);
+        this.physics.add.collider(this.player, this.pipes.getChildren(), deadBird, null, this);
         this.physics.add.collider(this.player, this.floor, deadBird, null, this);
         
         
-
-        this.input.on('pointerup', function(){
-            if(startscreen){
-                console.log('tap on start');
-                startscreen = false;
-                freeze = false;
-                self.player.setGravity(0, 500);
-                self.player.setCollideWorldBounds(true); 
-                self.song.play({loop:true, volume:0.4});
-                oneMove();
-            }else{
-                oneMove();
-            }
-            /*
-            if(endscreen){
-                activeEnd();
-            }
-            */
+        this.input.setTopOnly(true);
+        this.allscreen = this.add.image(0,0,'clear').setOrigin(0).setDisplaySize(w,h);
+        this.allscreen.setDepth(200);
+        this.allscreen.setAlpha(0.1);
+        this.allscreen.setInteractive();
+        this.allscreen.on('pointerdown', function(pointer){
+            
+                if(startscreen){
+                    console.log('tap on start');
+                    startscreen = false;
+                    freeze = false;
+                    self.score.text = '0';
+                    mypoints = 0;
+                    self.player.setGravity(0, 500);
+                    self.player.setCollideWorldBounds(true); 
+                    self.song.play({loop:true});
+                    oneMove();
+                }else{
+                    oneMove();
+                }
+            
         }, this);
+
+        this.soundbtn = this.physics.add.image(w-50, 10, 'sound').setOrigin(0).setDisplaySize(40, 40).setDepth(140);
+        this.soundwaves = this.physics.add.image(w-50, 10, 'soundwaves').setOrigin(0).setDisplaySize(40, 40).setDepth(139);
+        
+        this.soundbtn.setDepth(300);
+        this.soundbtn.setInteractive();
+        this.soundbtn.on('pointerdown', function (pointer) {
+            console.log('sound');
+            if(!mute){
+                console.log('MUTE');
+                self.sfxfly.volume = 0;
+                self.sfxcoin.volume = 0;
+                self.sfxdie.volume = 0;
+                self.song.volume = 0.0;
+                self.soundwaves.setAlpha(0);
+                mute = true;
+            }else{
+                console.log('UNMUTE');
+                self.sfxfly.volume = 1;
+                self.sfxcoin.volume = 1;
+                self.sfxdie.volume = 1;
+                self.song.volume = 0.4;
+                self.soundwaves.setAlpha(1);
+                mute = false;
+            }
+        });
 }
 
 function destroyPipe(clear, pipe){
@@ -208,8 +271,12 @@ function deadBird(){
         this.song.stop();
         this.sfxdie.play();
         this.player.angle = 45;
-        setTimeout(()=>{afterDie();}, 100);
+        Phaser.Actions.Call(this.pipes.getChildren(), function(pipe) {
+            pipe.disableBody();
+        });
+        setTimeout(()=>{afterDie();}, 400);
     }
+    
 }
 
 function afterDie(){
@@ -239,7 +306,7 @@ function afterDie(){
     self.highscore.setDepth(221);
     self.highscore.setAlpha(0);
     self.highscore.x = w/2 - self.highscore.displayWidth/2;
-    self.highscore.y = 1400;
+    self.highscore.y = h+200;
 
     self.tweens.add({
         targets: self.bgend,
@@ -250,7 +317,7 @@ function afterDie(){
 
     self.tweens.add({
         targets: self.theend,
-        y:220,
+        y:h/2-80,
         alpha:1,
         duration: 1500,
         delay:1000
@@ -258,7 +325,7 @@ function afterDie(){
 
     self.tweens.add({
         targets: self.highscore,
-        y:300,
+        y:h/2,
         alpha:1,
         duration: 1500,
         delay:1000,
@@ -274,13 +341,13 @@ function clearStage(){
     }
     self.player.setGravity(0, 0);
     self.player.angle = 0;
-    self.player.x = w/2-100;
-    self.player.y = 250;
+    self.player.x = w/2-birdleft;
+    self.player.y = birdpos;
+    self.taptoplay.x = (w/2 - self.taptoplay.displayWidth/2)+40;
     self.player.play('flyinf', true);
-    dead = false;
     activeEnd();
-    //endscreen = true;
 }
+
 function activeEnd(){
     self.tweens.add({
         targets: [self.highscore, self.theend, self.bgend],
@@ -292,53 +359,65 @@ function activeEnd(){
 }
 
 function startNew(){
-    self.score.text = '0';
-    mypoints = 0;
     self.highscore.destroy(); 
     self.theend.destroy();
     self.bgend.destroy();
+    dead = false;
     startscreen = true;
 }
 
 
 function pointPipe(player, pointpipe){
-    mypoints++;
-    this.score.text = mypoints;
-    this.sfxcoin.play();
-    pointpipe.destroy();
+    if(!dead){
+        mypoints++;
+        this.score.text = mypoints;
+        this.sfxcoin.play();
+        pointpipe.destroy();
+    }
 }
 
 function addPipes(type, x, y) {
-        let pipe = self.physics.add.image(x, y, type ).setDepth(3);
         if(type != 'hole'){
+            let pipe = self.physics.add.image(x, y, type );
+            pipe.body.immovable = true;
+            //pipe.body.mass = 10;
             self.pipes.add(pipe);
         }else{
+            let pipe = self.physics.add.image(x+30, y, type );
+            pipe.body.immovable = true;
             self.pointpipes.add(pipe);
         }
 } 
 
 function addPipeRows() {
     if(!freeze){
-    let hole = Phaser.Math.Between(2,5);
+    let hole = Phaser.Math.Between(calb.b, calb.c);
     let type;
-        for (let i = 0; i < 9; i++) {
+    let hh= -60;
+    let hcorr = 0;
+        for (let i = 0; i < calb.a; i++) {
             if(i == hole-1){
                 type = 'holeup';
+                hh += 60;
+                hcorr = 0;
             }
             if(i == hole){
                 type = 'hole';
+                hh += 60;
+                hcorr = 30;
             }
             if(i == hole+1){
-                type = 'hole';
-            }
-            if(i == hole+2){
                 type = 'holedown';
+                hh += 120;
+                hcorr = 0;
             }
-            if(i != hole && i != hole+1 && i != hole-1 && i!=hole+2){
-                type = 'block';  
+            if(i != hole && i != hole+1 && i != hole-1){
+                type = 'block';
+                hh += 60;
+                hcorr = 0;  
             }
             
-            addPipes(type, w+80, i * 60 + 10);
+            addPipes(type, w+80, hh+hcorr);
         }
     
     }else{
@@ -390,6 +469,8 @@ function animPipes(){
     Phaser.Actions.Call(self.pointpipes.getChildren(), function(pipe) {
         pipe.x -= SPEED_A;
     });
+    self.taptoplay.x -= SPEED_A;
+    
 }
 
 function animBacks(){
