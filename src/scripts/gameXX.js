@@ -190,9 +190,11 @@ function create (){
             }else{
                 oneMove();
             }
+            /*
             if(endscreen){
                 activeEnd();
             }
+            */
         }, this);
 }
 
@@ -276,7 +278,8 @@ function clearStage(){
     self.player.y = 250;
     self.player.play('flyinf', true);
     dead = false;
-    endscreen = true;
+    activeEnd();
+    //endscreen = true;
 }
 function activeEnd(){
     self.tweens.add({
