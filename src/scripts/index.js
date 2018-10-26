@@ -1,5 +1,5 @@
 import '../styles/index.scss';
 import phaser from 'phaser';
-import './gameX';
+import './gameXX';
 
-console.log('webpack starterkit');
+
