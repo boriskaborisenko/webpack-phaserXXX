@@ -132,7 +132,7 @@ function preload (){
 
     
 
-    this.load.audio('song', 'public/assets/sfx/marvin.wav');
+    this.load.audio('song', 'public/assets/sfx/misa.mp3');
     this.load.audio('sfx-fly', 'public/assets/sfx/fly.wav');
     this.load.audio('sfx-coin', 'public/assets/sfx/coin.wav');
     this.load.audio('sfx-die', 'public/assets/sfx/die.wav');
@@ -312,8 +312,8 @@ function afterDie(){
     self.bgend.setDepth(200);
     
     self.theend = self.add.text(0, 0, 'The end', { fontFamily: font, fontSize: '60px', fill: '#70B46E' });
-    self.theend.setStroke('#031B3C', 16);
-    self.theend.setShadow(2, 2, "#333333", 2, true, true);
+    //self.theend.setStroke('#031B3C', 16);
+    //self.theend.setShadow(2, 2, "#333333", 2, true, true);
     self.theend.setDepth(221);
     self.theend.setAlpha(0);
     self.theend.x = w/2 - self.theend.displayWidth/2;
