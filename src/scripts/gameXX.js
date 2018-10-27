@@ -4,7 +4,7 @@ var config = {
     type: Phaser.AUTO,
     parent: 'game',
     //backgroundColor: '#DDD897',
-    backgroundColor: '#138792',
+    backgroundColor: '#6767af',
     width: w,
     height: h,
     physics: {
@@ -143,12 +143,13 @@ function preload (){
     this.load.image('sound', 'public/assets/soundOFF.png');
 
     this.load.image('ground', 'public/assets/platform.png');
-    this.load.image('line', 'public/assets/line.png');
+    //this.load.image('line', 'public/assets/line.png');
     this.load.image('clear', 'public/assets/clear.png');
     this.load.image('block', 'public/assets/block.png');
     this.load.image('hole', 'public/assets/hole.png');
     this.load.image('holeup', 'public/assets/holeup.png');
     this.load.image('holedown', 'public/assets/holedown.png');
+    /*
     this.load.image('bg', 'public/assets/bg.png');
     this.load.image('bgb1', 'public/assets/bgb1.png');
     this.load.image('bgb2', 'public/assets/bgb2.png');
@@ -156,11 +157,19 @@ function preload (){
     this.load.image('bgsky', 'public/assets/bgsky.png');
     this.load.image('bggross', 'public/assets/bggross.png');
     this.load.image('bgend', 'public/assets/bgend.png');
-
+    */
     this.load.spritesheet('bird-pink', 'public/assets/hero/heroes/pink.png', { frameWidth: 48, frameHeight: 33 });
     this.load.spritesheet('bird-orange', 'public/assets/hero/heroes/orange.png', { frameWidth: 48, frameHeight: 33 });
     this.load.spritesheet('bird-violet', 'public/assets/hero/heroes/violet.png', { frameWidth: 48, frameHeight: 33 });
-
+    
+    this.load.image('night_sky', 'public/assets/level/night/stage/sky.png');
+    this.load.image('night_stars', 'public/assets/level/night/stage/stars.png');
+    this.load.image('forrest1', 'public/assets/level/night/stage/forrest1.png');
+    this.load.image('forrest2', 'public/assets/level/night/stage/forrest2.png');
+    this.load.image('night_m1', 'public/assets/level/night/stage/mount1.png');
+    this.load.image('night_m2', 'public/assets/level/night/stage/mount2.png');
+    this.load.image('night_m3', 'public/assets/level/night/stage/mount3.png');
+    this.load.image('night_line', 'public/assets/level/night/stage/line.png');
    
 }
 
@@ -186,12 +195,21 @@ function create (){
     this.score.setShadow(2, 2, "#333333", 2, true, true);
     this.score.x = w/2 - this.score.displayWidth/2;
 
-    this.bgsky = this.add.tileSprite(0, 0+autoH, w, 500, 'bgsky').setOrigin(0);
-    this.bgb1 = this.add.tileSprite(0, 0+autoH, w, 500, 'bgb1').setOrigin(0);
-    this.bgb2 = this.add.tileSprite(0, 0+autoH, w, 500, 'bgb2').setOrigin(0);
-    this.bgb3 = this.add.tileSprite(0, 0+autoH, w, 500, 'bgb3').setOrigin(0);
-    this.bggross = this.add.tileSprite(0, 0+autoH, w, 500, 'bggross').setOrigin(0);
-    this.line = this.add.tileSprite(0, 500+autoH, w, 400, 'line').setOrigin(0).setDepth(100);
+    //this.bgsky = this.add.tileSprite(0, 0+autoH, w, 500, 'bgsky').setOrigin(0);
+    //this.bgb1 = this.add.tileSprite(0, 0+autoH, w, 500, 'bgb1').setOrigin(0);
+    //this.bgb2 = this.add.tileSprite(0, 0+autoH, w, 500, 'bgb2').setOrigin(0);
+    //this.bgb3 = this.add.tileSprite(0, 0+autoH, w, 500, 'bgb3').setOrigin(0);
+    //this.bggross = this.add.tileSprite(0, 0+autoH, w, 500, 'bggross').setOrigin(0);
+
+    this.bgsky = this.add.tileSprite(0, 0+autoH, w, 500, 'night_sky').setOrigin(0);
+    this.stars = this.add.tileSprite(0, 0+autoH, w, 500, 'night_stars').setOrigin(0);
+    this.bgb3 = this.add.tileSprite(0, 0+autoH, w, 500, 'night_m3').setOrigin(0);
+    this.bgb2 = this.add.tileSprite(0, 0+autoH, w, 500, 'night_m2').setOrigin(0);
+    this.bgb1 = this.add.tileSprite(0, 0+autoH, w, 500, 'night_m1').setOrigin(0);
+    this.bggross2 = this.add.tileSprite(0, 0+autoH, w, 500, 'forrest2').setOrigin(0);
+    this.bggross = this.add.tileSprite(0, 0+autoH, w, 500, 'forrest1').setOrigin(0);
+    
+    this.line = this.add.tileSprite(0, 500+autoH, w, 400, 'night_line').setOrigin(0).setDepth(100);
     this.floor = this.physics.add.image(0, 500+autoH, 'clear').setOrigin(0).setDisplaySize(w, 10); 
     
 
@@ -317,7 +335,7 @@ function afterDie(){
     if(mypoints > highscore){
         highscore = mypoints;
     }
-    self.bgend = self.add.tileSprite(0, 0, w, 500, 'bgend').setOrigin(0).setDisplaySize(w,h).setAlpha(0);
+    self.bgend = self.add.tileSprite(0, 0, w, 500, 'night_sky').setOrigin(0).setDisplaySize(w,h).setAlpha(0);
     self.bgend.setDepth(200);
     
     self.theend = self.add.text(0, 0, 'The end', { fontFamily: font, fontSize: '60px', fill: '#70B46E' });
@@ -521,10 +539,13 @@ function animPipes(){
 }
 
 function animBacks(){
-    self.line.tilePositionX += SPEED_A;
-    self.bgb1.tilePositionX += 0.1;
-    self.bgb2.tilePositionX += 0.25;
-    self.bgb3.tilePositionX += 0.45;
-    self.bgsky.tilePositionX += 0.05;
+    
+    self.bgb3.tilePositionX += 0.1;
+    self.bgb2.tilePositionX += 0.2;
+    self.bgb1.tilePositionX += 0.4;
+    //self.bgsky.tilePositionX += 0.05;
+    self.stars.tilePositionX += 0.05;
     self.bggross.tilePositionX += 0.6;
+    self.bggross2.tilePositionX += 0.5;
+    self.line.tilePositionX += SPEED_A;
 }
