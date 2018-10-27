@@ -116,7 +116,7 @@ function preload (){
 
     //PRELOADER
 
-    this.load.audio('song', 'public/assets/sfx/theme.wav');
+    this.load.audio('song', 'public/assets/sfx/marvin.wav');
     this.load.audio('sfx-fly', 'public/assets/sfx/fly.wav');
     this.load.audio('sfx-coin', 'public/assets/sfx/coin.wav');
     this.load.audio('sfx-die', 'public/assets/sfx/die.wav');
