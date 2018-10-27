@@ -67,6 +67,8 @@ var calb = {a:Math.round(howBlocks), b:Math.ceil(fB), c:Math.floor(lB)};
 var SPEED_A = 3.4;
 var GEN_TIME = Phaser.Math.Between(2400, 2400);
 
+var heroes = ['pink','orange','violet'];
+
 function init(){
     let splashpic = this.add.image(w/2, h/2, 'splash');
     this.splash = this.add.text(0, 0, 'Bird X', { fontFamily: font, fontSize: '80px', fill: '#70B46E' });
@@ -132,7 +134,7 @@ function preload (){
 
     
 
-    this.load.audio('song', 'public/assets/sfx/misa.mp3');
+    this.load.audio('song', 'public/assets/sfx/theme.wav');
     this.load.audio('sfx-fly', 'public/assets/sfx/fly.wav');
     this.load.audio('sfx-coin', 'public/assets/sfx/coin.wav');
     this.load.audio('sfx-die', 'public/assets/sfx/die.wav');
@@ -155,9 +157,11 @@ function preload (){
     this.load.image('bggross', 'public/assets/bggross.png');
     this.load.image('bgend', 'public/assets/bgend.png');
 
-    this.load.spritesheet('bird', 'public/assets/bird2.png', { frameWidth: 43, frameHeight: 30 });
+    this.load.spritesheet('bird-pink', 'public/assets/hero/heroes/pink.png', { frameWidth: 48, frameHeight: 33 });
+    this.load.spritesheet('bird-orange', 'public/assets/hero/heroes/orange.png', { frameWidth: 48, frameHeight: 33 });
+    this.load.spritesheet('bird-violet', 'public/assets/hero/heroes/violet.png', { frameWidth: 48, frameHeight: 33 });
 
-    
+   
 }
 
 function create (){
@@ -205,23 +209,28 @@ function create (){
             callbackScope: this,
             loop: true
         }); 
+
+        this.randColor = Phaser.Math.Between(0, heroes.length-1);
+        console.log(this.randColor, heroes[this.randColor]);
         
-        this.player = this.physics.add.sprite(w/2-birdleft, birdpos, 'bird');
+        this.player = this.physics.add.sprite(w/2-birdleft, birdpos, 'bird-'+heroes[this.randColor]);
         this.player.setDepth(150);
         
-        this.anims.create({
-            key: 'fly',
-            frames: this.anims.generateFrameNumbers('bird', { start: 0, end: 2 }),
-            frameRate: 10,
-            repeat: 0
-        });
-        this.anims.create({
-            key: 'flyinf',
-            frames: this.anims.generateFrameNumbers('bird', { start: 0, end: 2 }),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.player.play('flyinf', true);
+        for (let i = 0; i < heroes.length; i++){
+            this.anims.create({
+                key: 'fly-'+heroes[i],
+                frames: this.anims.generateFrameNumbers('bird-'+heroes[i], { start: 0, end: 2 }),
+                frameRate: 10,
+                repeat: 0
+            });
+            this.anims.create({
+                key: 'flyinf-'+heroes[i],
+                frames: this.anims.generateFrameNumbers('bird-'+heroes[i], { start: 0, end: 2 }),
+                frameRate: 10,
+                repeat: -1
+            });
+        }
+        this.player.play('flyinf-'+heroes[this.randColor], true);
 
         this.physics.add.overlap(this.clear, this.pipes.getChildren(), destroyPipe, null, this);
         this.physics.add.overlap(this.clear, this.pointpipes.getChildren(), destroyPipe, null, this); 
@@ -355,16 +364,34 @@ function afterDie(){
 
 function clearStage(){
     console.log('clear stage...');
-    for(let $i = 0; $i < 10; $i++){
+    for(let i = 0; i < 10; i++){
         self.pipes.children.entries.map(item=>item.destroy());
         self.pointpipes.children.entries.map(item=>item.destroy());
     }
+    console.log(self.randColor);
+    self.randColor = Phaser.Math.Between(0,heroes.length-1);
+    console.log(self.randColor);
+    self.player.destroy();
+    self.player = self.physics.add.sprite(w/2-birdleft, birdpos, 'bird-'+heroes[self.randColor]);
+    self.player.setDepth(150);
+    self.player.setGravity(0, 0);
+    //self.player.angle = 0;
+    self.player.x = w/2-birdleft;
+    self.player.y = birdpos;
+    self.taptoplay.x = (w/2 - self.taptoplay.displayWidth/2)+40;
+    self.player.play('flyinf-'+heroes[self.randColor], true);
+    self.physics.add.overlap(self.player, self.pointpipes.children.entries, pointPipe, null, self);
+
+        self.physics.add.collider(self.player, self.pipes.getChildren(), deadBird, null, self);
+        self.physics.add.collider(self.player, self.floor, deadBird, null, self);
+/*
     self.player.setGravity(0, 0);
     self.player.angle = 0;
     self.player.x = w/2-birdleft;
     self.player.y = birdpos;
     self.taptoplay.x = (w/2 - self.taptoplay.displayWidth/2)+40;
     self.player.play('flyinf', true);
+ */   
     activeEnd();
 }
 
@@ -452,7 +479,7 @@ function update(){
         animPipes();
         if(moveMouse){
             this.player.setVelocityY(-200);
-            this.player.play('fly', true);
+            this.player.play('fly-'+heroes[this.randColor], true);
             moveMouse = false;
             this.player.angle = -10;
             this.sfxfly.play();
