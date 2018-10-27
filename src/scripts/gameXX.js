@@ -24,7 +24,7 @@ var config = {
 var game = new Phaser.Game(config);
 var self;
 
-
+var font = 'Paytone One';
 var moveMouse;
 var playerdirection;
 var mypoints = 0;
@@ -77,7 +77,7 @@ function preload (){
                 y: h/2 - 36,
                 text: 'Loading',
                 style: {
-                    font: '20px Black Ops One',
+                    font: '20px '+font,
                     fill: '#ffffff'
                 }
             });
@@ -88,7 +88,7 @@ function preload (){
                 y: h/2,
                 text: '0%',
                 style: {
-                    font: '14px Black Ops One',
+                    font: '14px '+font,
                     fill: '#ffffff'
                 }
             });
@@ -153,12 +153,12 @@ function create (){
     this.sfxdie = this.sound.add('sfx-die');
     this.song = this.sound.add('song');
 
-    this.taptoplay = this.add.text(0, birdpos-20, 'tap to play', { fontFamily: 'Black Ops One', fontSize: '32px', fill: '#ffffff' });
+    this.taptoplay = this.add.text(0, birdpos-20, 'tap to play', { fontFamily: font, fontSize: '32px', fill: '#ffffff' });
     this.taptoplay.setDepth(10);
     this.taptoplay.setAlpha(0.4);
     this.taptoplay.x = (w/2 - this.taptoplay.displayWidth/2)+40;
 
-    this.score = this.add.text(0, 40, '0', { fontFamily: 'Black Ops One', fontSize: '56px', fill: '#ffffff' });
+    this.score = this.add.text(0, 40, '0', { fontFamily: font, fontSize: '56px', fill: '#ffffff' });
     this.score.setDepth(221);
     this.score.x = w/2 - this.score.displayWidth/2;
 
@@ -291,7 +291,7 @@ function afterDie(){
     self.bgend = self.add.tileSprite(0, 0, w, 500, 'bgend').setOrigin(0).setDisplaySize(w,h).setAlpha(0);
     self.bgend.setDepth(200);
     
-    self.theend = self.add.text(0, 0, 'The end', { fontFamily: 'Black Ops One', fontSize: '60px', fill: '#70B46E' });
+    self.theend = self.add.text(0, 0, 'The end', { fontFamily: font, fontSize: '60px', fill: '#70B46E' });
     //self.theend.stroke = '#ff303f';
     //self.theend.strokeThickness = 16;
     self.theend.setDepth(221);
@@ -300,7 +300,7 @@ function afterDie(){
     self.theend.y = -200;
 
 
-    self.highscore = self.add.text(0, 0, 'highscore: '+highscore, { fontFamily: 'Black Ops One', fontSize: '24px', fill: '#8DCC61' });
+    self.highscore = self.add.text(0, 0, 'highscore: '+highscore, { fontFamily: font, fontSize: '24px', fill: '#8DCC61' });
     //self.highscore.stroke = '#ff303f';
     //self.highscore.strokeThickness = 16;
     self.highscore.setDepth(221);
