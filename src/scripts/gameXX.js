@@ -364,7 +364,7 @@ function afterDie(){
 
     self.tweens.add({
         targets: self.theend,
-        y:h/2-110,
+        y:h/2-96,
         alpha:1,
         duration: 1500,
         delay:1000
