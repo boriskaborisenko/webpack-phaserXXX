@@ -339,8 +339,8 @@ function afterDie(){
     self.bgend.setDepth(200);
     
     self.theend = self.add.text(0, 0, 'The end', { fontFamily: font, fontSize: '60px', fill: '#70B46E' });
-    //self.theend.setStroke('#031B3C', 16);
-    //self.theend.setShadow(2, 2, "#333333", 2, true, true);
+    self.theend.setStroke('#031B3C', 16);
+    self.theend.setShadow(2, 2, "#333333", 2, true, true);
     self.theend.setDepth(221);
     self.theend.setAlpha(0);
     self.theend.x = w/2 - self.theend.displayWidth/2;
@@ -348,8 +348,8 @@ function afterDie(){
 
 
     self.highscore = self.add.text(0, 0, 'highscore: '+highscore, { fontFamily: font, fontSize: '24px', fill: '#8DCC61' });
-    //self.highscore.stroke = '#ff303f';
-    //self.highscore.strokeThickness = 16;
+    self.highscore.setStroke('#031B3C', 12);
+    self.highscore.setShadow(2, 2, "#333333", 2, true, true);
     self.highscore.setDepth(221);
     self.highscore.setAlpha(0);
     self.highscore.x = w/2 - self.highscore.displayWidth/2;
@@ -364,7 +364,7 @@ function afterDie(){
 
     self.tweens.add({
         targets: self.theend,
-        y:h/2-80,
+        y:h/2-110,
         alpha:1,
         duration: 1500,
         delay:1000
@@ -438,6 +438,7 @@ function pointPipe(player, pointpipe){
         this.score.text = mypoints;
         this.sfxcoin.play();
         pointpipe.destroy();
+        self.score.x = w/2 - self.score.displayWidth/2;
     }
 }
 
