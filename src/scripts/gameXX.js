@@ -15,9 +15,15 @@ var config = {
         }
     },
     scene: {
+        init: init,
         preload: preload,
         create: create,
-        update: update
+        update: update,
+        pack: {
+            files: [
+                { type: 'image', key: 'splash', url: 'public/assets/splash.jpg' }
+            ]
+        }
     }
 };
 
@@ -61,60 +67,70 @@ var calb = {a:Math.round(howBlocks), b:Math.ceil(fB), c:Math.floor(lB)};
 var SPEED_A = 3.4;
 var GEN_TIME = Phaser.Math.Between(2400, 2400);
 
+function init(){
+    let splashpic = this.add.image(w/2, h/2, 'splash');
+    this.splash = this.add.text(0, 0, 'Bird X', { fontFamily: font, fontSize: '80px', fill: '#70B46E' });
+    this.splash.setStroke('#031B3C', 16);
+    this.splash.setShadow(2, 2, "#333333", 2, true, true);
+    this.splash.x = w/2 - this.splash.displayWidth/2;
+    this.splash.y = h/2 - 70;
+    //PRELOADER
+
+    var progressBar = this.add.graphics();
+    var progressBox = this.add.graphics();
+    progressBox.fillStyle(0x222222, 0.2);
+    progressBox.fillRect(w/2-150, h/2+75, 300, 30);
+    
+    var width = this.cameras.main.width;
+    var height = this.cameras.main.height;
+    var loadingText = this.make.text({
+        x: w/2,
+        y: h/2 + 120,
+        text: 'loading',
+        style: {
+            font: '20px '+font,
+            fill: '#ffffff'
+        }
+    });
+    loadingText.setOrigin(0.5, 0.5);
+    
+    var percentText = this.make.text({
+        x: w/2,
+        y: h/2+90,
+        text: '0%',
+        style: {
+            font: '14px '+font,
+            fill: '#ffffff'
+        }
+    });
+    percentText.setOrigin(0.5, 0.5).setDepth(30);
+    
+
+    
+    this.load.on('progress', function (value) {
+        percentText.setText(parseInt(value * 100) + '%');
+        progressBar.clear();
+        progressBar.fillStyle(0x8DCC61, 1);
+        progressBar.fillRect(w/2-145, h/2+78, 290 * value, 25).setDepth(10);
+    });
+    
+    
+
+    this.load.on('complete', function () {
+        progressBar.destroy();
+        progressBox.destroy();
+        loadingText.destroy();
+        percentText.destroy();
+        splashpic.destroy();
+        //this.splash.destroy();
+    });
+//PRELOADER
+
+}
+
 function preload (){
 
-    //PRELOADER
-
-            var progressBar = this.add.graphics();
-            var progressBox = this.add.graphics();
-            progressBox.fillStyle(0x222222, 0.2);
-            progressBox.fillRect(w/2-150, h/2-15, 300, 30);
-            
-            var width = this.cameras.main.width;
-            var height = this.cameras.main.height;
-            var loadingText = this.make.text({
-                x: w/2,
-                y: h/2 - 36,
-                text: 'Loading',
-                style: {
-                    font: '20px '+font,
-                    fill: '#ffffff'
-                }
-            });
-            loadingText.setOrigin(0.5, 0.5);
-            
-            var percentText = this.make.text({
-                x: w/2,
-                y: h/2,
-                text: '0%',
-                style: {
-                    font: '14px '+font,
-                    fill: '#ffffff'
-                }
-            });
-            percentText.setOrigin(0.5, 0.5).setDepth(30);
-            
- 
-            
-            this.load.on('progress', function (value) {
-                percentText.setText(parseInt(value * 100) + '%');
-                progressBar.clear();
-                progressBar.fillStyle(0x8DCC61, 1);
-                progressBar.fillRect(w/2-145, h/2-12.5, 290 * value, 25).setDepth(10);
-            });
-            
-            
- 
-            this.load.on('complete', function () {
-                progressBar.destroy();
-                progressBox.destroy();
-                loadingText.destroy();
-                percentText.destroy();
-            });
-            
-            
-
-    //PRELOADER
+    
 
     this.load.audio('song', 'public/assets/sfx/marvin.wav');
     this.load.audio('sfx-fly', 'public/assets/sfx/fly.wav');
@@ -146,20 +162,24 @@ function preload (){
 
 function create (){
     self = this;
-
+    //this.stage.setBackgroundColor(0xff303f);
     
     this.sfxfly = this.sound.add('sfx-fly');
     this.sfxcoin = this.sound.add('sfx-coin');
     this.sfxdie = this.sound.add('sfx-die');
     this.song = this.sound.add('song');
 
-    this.taptoplay = this.add.text(0, birdpos-20, 'tap to play', { fontFamily: font, fontSize: '32px', fill: '#ffffff' });
+    this.taptoplay = this.add.text(0, birdpos-28, 'tap to play', { fontFamily: font, fontSize: '32px', fill: '#8DCC61' });
+    this.taptoplay.setStroke('#031B3C', 12);
+    this.taptoplay.setShadow(2, 2, "#333333", 2, true, true);
     this.taptoplay.setDepth(10);
-    this.taptoplay.setAlpha(0.4);
+    this.taptoplay.setAlpha(1);
     this.taptoplay.x = (w/2 - this.taptoplay.displayWidth/2)+40;
 
     this.score = this.add.text(0, 40, '0', { fontFamily: font, fontSize: '56px', fill: '#ffffff' });
     this.score.setDepth(221);
+    this.score.setStroke('#cccccc', 8);
+    this.score.setShadow(2, 2, "#333333", 2, true, true);
     this.score.x = w/2 - this.score.displayWidth/2;
 
     this.bgsky = this.add.tileSprite(0, 0+autoH, w, 500, 'bgsky').setOrigin(0);
@@ -234,8 +254,8 @@ function create (){
             
         }, this);
 
-        this.soundbtn = this.physics.add.image(w-50, 10, 'sound').setOrigin(0).setDisplaySize(40, 40).setDepth(140);
-        this.soundwaves = this.physics.add.image(w-50, 10, 'soundwaves').setOrigin(0).setDisplaySize(40, 40).setDepth(139);
+        this.soundbtn = this.physics.add.image(w-80, 10, 'sound').setOrigin(0).setDisplaySize(70, 70).setDepth(140);
+        this.soundwaves = this.physics.add.image(w-80, 10, 'soundwaves').setOrigin(0).setDisplaySize(70, 70).setDepth(139);
         
         this.soundbtn.setDepth(300);
         this.soundbtn.setInteractive();
@@ -292,8 +312,8 @@ function afterDie(){
     self.bgend.setDepth(200);
     
     self.theend = self.add.text(0, 0, 'The end', { fontFamily: font, fontSize: '60px', fill: '#70B46E' });
-    //self.theend.stroke = '#ff303f';
-    //self.theend.strokeThickness = 16;
+    self.theend.setStroke('#031B3C', 16);
+    self.theend.setShadow(2, 2, "#333333", 2, true, true);
     self.theend.setDepth(221);
     self.theend.setAlpha(0);
     self.theend.x = w/2 - self.theend.displayWidth/2;
