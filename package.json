@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "description": "A light foundation for your next frontend project based on webpack.",
   "scripts": {
-    "build": "webpack --config webpack/webpack.config.prod.js  --colors; git add --all; git commit -m 'autobuild' ",
-    "postbuild": "git push master origin",
+    "build": "webpack --config webpack/webpack.config.prod.js  --colors",
+    "postbuild": "git add --all; git commit -m 'autobuild'; git push origin master",
     "start": "webpack-dev-server --open --config webpack/webpack.config.dev.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/boriskaborisenko/webpack-phaserXXX.git"
+    "url": "git@github.com:boriskaborisenko/webpack-phaserXXX.git"
   },
   "keywords": [
     "webpack",
