@@ -511,8 +511,13 @@ function update(){
     if(!freeze){
         
         if(this.score % 3 == 0){
-            SPEED_A += 0.5;
-            pipeInterval -= 1000;
+            if(SPEED_A < 30){
+                SPEED_A += 25;
+            }
+            if(pipeInterval>1000){
+                pipeInterval -= 500;
+            }
+            
         }
         
         animPipes();
