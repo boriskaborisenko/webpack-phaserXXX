@@ -512,7 +512,7 @@ function update(){
         
         if(this.score % 3 == 0){
             SPEED_A += 0.5;
-            pipeInterval -= 200;
+            pipeInterval -= 1000;
         }
         
         animPipes();
