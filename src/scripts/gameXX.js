@@ -507,7 +507,7 @@ function addPipeRows() {
 function update(){
     if(!freeze){
         
-        if(this.score % 10 == 0){
+        if(this.score % 3 == 0){
             SPEED_A += 0.5;
         }
         
