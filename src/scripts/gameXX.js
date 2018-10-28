@@ -74,8 +74,8 @@ var calb = {a:Math.round(howBlocks), b:Math.ceil(fB), c:Math.floor(lB)};
 var defSpeed = 3.4;
 var defInt = 2400;
 var SPEED_A = defSpeed;
-var pipeInterval = defInt;
-var GEN_TIME = Phaser.Math.Between(pipeInterval, pipeInterval);
+
+var GEN_TIME = Phaser.Math.Between(defInt, defInt);
 var fixdif = false;
 var levelStep = 10;
 var levelUp = levelStep;
@@ -423,8 +423,7 @@ function clearStage(){
         self.physics.add.collider(self.player, self.floor, deadBird, null, self);
 
     SPEED_A = defSpeed;
-    pipeInterval = defInt;
-    self.timedEvent.delay = SPEED_A;
+    self.timedEvent.delay = defInt;
     fixdif = false;
 /*
     self.player.setGravity(0, 0);
@@ -519,8 +518,6 @@ function addPipeRows() {
 
 function switchDif(){
     if(fixdif && mypoints == levelUp){
-        console.log('UP UP UP UP UP');
-        console.log(self.timedEvent);
         if(self.timedEvent.delay > 1000){
             self.timedEvent.delay -= 200;  
         }
@@ -529,7 +526,6 @@ function switchDif(){
         }
         levelUp += levelStep;
         fixdif = false;
-        console.log('nexnLEVELUP on', levelUp);
     }
     if(!fixdif && mypoints == levelUp-1){
         fixdif = true;
