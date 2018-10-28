@@ -275,7 +275,7 @@ function create (){
         this.physics.add.collider(this.player, this.pipes.getChildren(), deadBird, null, this);
         this.physics.add.collider(this.player, this.floor, deadBird, null, this);
         
-        
+        //INPUTS
         this.input.setTopOnly(true);
         this.allscreen = this.add.image(0,0,'clear').setOrigin(0).setDisplaySize(w,h);
         this.allscreen.setDepth(200);
