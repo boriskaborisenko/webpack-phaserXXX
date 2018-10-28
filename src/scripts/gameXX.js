@@ -72,8 +72,10 @@ var lB = howBlocks - fB;
 var calb = {a:Math.round(howBlocks), b:Math.ceil(fB), c:Math.floor(lB)};
 
 var defSpeed = 3.4;
+var defInt = 2400;
 var SPEED_A = defSpeed;
-var GEN_TIME = Phaser.Math.Between(2400, 2400);
+var pipeInterval = defInt;
+var GEN_TIME = Phaser.Math.Between(pipeInterval, pipeInterval);
 
 var heroes = ['pink','orange','violet'];
 
@@ -413,6 +415,7 @@ function clearStage(){
         self.physics.add.collider(self.player, self.floor, deadBird, null, self);
 
     SPEED_A = defSpeed;
+    pipeInterval = defInt;
 /*
     self.player.setGravity(0, 0);
     self.player.angle = 0;
@@ -509,6 +512,7 @@ function update(){
         
         if(this.score % 3 == 0){
             SPEED_A += 0.5;
+            pipeInterval -= 200;
         }
         
         animPipes();
