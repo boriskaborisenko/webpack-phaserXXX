@@ -77,8 +77,10 @@ var SPEED_A = defSpeed;
 
 var GEN_TIME = Phaser.Math.Between(defInt, defInt);
 var fixdif = false;
-var levelStep = 10;
+var levelStep = 3;
 var levelUp = levelStep;
+var addSpeed = 0.5;
+var reduceInt = 200;
 
 var heroes = ['pink','orange','violet'];
 
@@ -519,10 +521,10 @@ function addPipeRows() {
 function switchDif(){
     if(fixdif && mypoints == levelUp){
         if(self.timedEvent.delay > 1000){
-            self.timedEvent.delay -= 200;  
+            self.timedEvent.delay -= reduceInt;  
         }
         if(SPEED_A < 8){
-            SPEED_A += 0.2;
+            SPEED_A += addSpeed;
         }
         levelUp += levelStep;
         fixdif = false;
