@@ -77,10 +77,10 @@ var SPEED_A = defSpeed;
 
 var GEN_TIME = Phaser.Math.Between(defInt, defInt);
 var fixdif = false;
-var levelStep = 3;
+var levelStep = 5;
 var levelUp = levelStep;
-var addSpeed = 0.5;
-var reduceInt = 200;
+var addSpeed = 0.25;
+var reduceInt = 100;
 
 var heroes = ['pink','orange','violet'];
 
@@ -528,6 +528,7 @@ function switchDif(){
         }
         levelUp += levelStep;
         fixdif = false;
+        console.log(SPEED_A, self.timedEvent.delay, 'next Up on',levelUp);
     }
     if(!fixdif && mypoints == levelUp-1){
         fixdif = true;
