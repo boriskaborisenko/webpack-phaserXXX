@@ -76,6 +76,9 @@ var defInt = 2400;
 var SPEED_A = defSpeed;
 var pipeInterval = defInt;
 var GEN_TIME = Phaser.Math.Between(pipeInterval, pipeInterval);
+var fixdif = false;
+var levelStep = 10;
+var levelUp = levelStep;
 
 var heroes = ['pink','orange','violet'];
 
@@ -230,6 +233,8 @@ function create (){
     this.clear = this.physics.add.image(-90, 0, 'clear').setOrigin(0).setDisplaySize(1, h); 
     this.pipes = this.add.group();
     this.pointpipes = this.add.group();
+
+    
         
         this.timedEvent = this.time.addEvent({
             delay: GEN_TIME,
@@ -237,6 +242,7 @@ function create (){
             callbackScope: this,
             loop: true
         }); 
+        
 
         this.randColor = Phaser.Math.Between(0, heroes.length-1);
         console.log(this.randColor, heroes[this.randColor]);
@@ -284,6 +290,9 @@ function create (){
                     self.player.setGravity(0, 500);
                     self.player.setCollideWorldBounds(true); 
                     self.song.play({loop:true});
+
+                    
+
                     oneMove();
                 }else{
                     oneMove();
@@ -333,7 +342,6 @@ function deadBird(){
         });
         setTimeout(()=>{afterDie();}, 400);
     }
-    
 }
 
 function afterDie(){
@@ -416,6 +424,8 @@ function clearStage(){
 
     SPEED_A = defSpeed;
     pipeInterval = defInt;
+    self.timedEvent.delay = SPEED_A;
+    fixdif = false;
 /*
     self.player.setGravity(0, 0);
     self.player.angle = 0;
@@ -507,19 +517,29 @@ function addPipeRows() {
 
 
 
+function switchDif(){
+    if(fixdif && mypoints == levelUp){
+        console.log('UP UP UP UP UP');
+        console.log(self.timedEvent);
+        if(self.timedEvent.delay > 1000){
+            self.timedEvent.delay -= 200;  
+        }
+        if(SPEED_A < 8){
+            SPEED_A += 0.2;
+        }
+        levelUp += levelStep;
+        fixdif = false;
+        console.log('nexnLEVELUP on', levelUp);
+    }
+    if(!fixdif && mypoints == levelUp-1){
+        fixdif = true;
+    }
+}
+
+
 function update(){
     if(!freeze){
-        
-        if(this.score % 3 == 0){
-            if(SPEED_A < 30){
-                SPEED_A += 25;
-            }
-            if(pipeInterval>1000){
-                pipeInterval -= 500;
-            }
-            
-        }
-        
+        switchDif();  
         animPipes();
         if(moveMouse){
             this.player.setVelocityY(-200);
@@ -565,7 +585,6 @@ function animPipes(){
 }
 
 function animBacks(){
-    
     self.bgb3.tilePositionX += 0.1;
     self.bgb2.tilePositionX += 0.2;
     self.bgb1.tilePositionX += 0.4;
