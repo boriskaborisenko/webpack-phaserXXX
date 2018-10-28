@@ -34,7 +34,14 @@ var font = 'Paytone One';
 var moveMouse;
 var playerdirection;
 var mypoints = 0;
-var highscore = 0;
+
+if(localStorage.highscore === undefined){
+    var highscore = 0;
+    localStorage.setItem('highscore', highscore);
+}else{
+    var highscore = localStorage.getItem("highscore");
+}
+
 
 var freeze = true;
 var startscreen = true;
@@ -64,7 +71,8 @@ var fB = howBlocks/3;
 var lB = howBlocks - fB;
 var calb = {a:Math.round(howBlocks), b:Math.ceil(fB), c:Math.floor(lB)};
 
-var SPEED_A = 3.4;
+var defSpeed = 3.4;
+var SPEED_A = defSpeed;
 var GEN_TIME = Phaser.Math.Between(2400, 2400);
 
 var heroes = ['pink','orange','violet'];
@@ -334,6 +342,7 @@ function afterDie(){
 
     if(mypoints > highscore){
         highscore = mypoints;
+        localStorage.highscore = highscore;
     }
     self.bgend = self.add.tileSprite(0, 0, w, 500, 'night_sky').setOrigin(0).setDisplaySize(w,h).setAlpha(0);
     self.bgend.setDepth(200);
@@ -402,6 +411,8 @@ function clearStage(){
 
         self.physics.add.collider(self.player, self.pipes.getChildren(), deadBird, null, self);
         self.physics.add.collider(self.player, self.floor, deadBird, null, self);
+
+    SPEED_A = defSpeed;
 /*
     self.player.setGravity(0, 0);
     self.player.angle = 0;
@@ -495,6 +506,11 @@ function addPipeRows() {
 
 function update(){
     if(!freeze){
+        
+        if(this.score % 10 == 0){
+            SPEED_A += 0.5;
+        }
+        
         animPipes();
         if(moveMouse){
             this.player.setVelocityY(-200);
