@@ -1,5 +1,10 @@
 const w = window.innerWidth;
 const h = window.innerHeight;
+
+
+
+
+
 var config = {
     type: Phaser.AUTO,
     parent: 'game',
@@ -14,7 +19,11 @@ var config = {
             debug: false
         }
     },
+
+    
+    
     scene: {
+        
         init: init,
         preload: preload,
         create: create,
@@ -25,6 +34,8 @@ var config = {
             ]
         }
     }
+    
+    
 };
 
 var game = new Phaser.Game(config);
@@ -192,6 +203,8 @@ function create (){
     self = this;
     //this.stage.setBackgroundColor(0xff303f);
     
+    
+    
     this.sfxfly = this.sound.add('sfx-fly');
     this.sfxcoin = this.sound.add('sfx-coin');
     this.sfxdie = this.sound.add('sfx-die');
@@ -279,7 +292,7 @@ function create (){
         this.input.setTopOnly(true);
         this.allscreen = this.add.image(0,0,'clear').setOrigin(0).setDisplaySize(w,h);
         this.allscreen.setDepth(200);
-        this.allscreen.setAlpha(0.1);
+        this.allscreen.setAlpha(0.3);
         this.allscreen.setInteractive();
         this.allscreen.on('pointerdown', function(pointer){
             
@@ -332,6 +345,8 @@ function create (){
 function destroyPipe(clear, pipe){
     pipe.destroy();
 }
+
+
 function deadBird(){
     if(!dead){
         freeze = true;
@@ -342,9 +357,13 @@ function deadBird(){
         Phaser.Actions.Call(this.pipes.getChildren(), function(pipe) {
             pipe.disableBody();
         });
-        setTimeout(()=>{afterDie();}, 400);
+        setTimeout(()=>{
+            afterDie();
+        }, 400);
     }
 }
+
+
 
 function afterDie(){
     console.log('startscreen', startscreen);
@@ -454,6 +473,7 @@ function startNew(){
     self.bgend.destroy();
     dead = false;
     startscreen = true;
+    
 }
 
 
@@ -592,4 +612,14 @@ function animBacks(){
     self.bggross.tilePositionX += 0.6;
     self.bggross2.tilePositionX += 0.5;
     self.line.tilePositionX += SPEED_A;
+}
+
+function newscene(){
+    //this.scene.launch('newscene');
+    //this.scene.pause();
+    console.log('NEW scene');
+    button.on('pointerdown', function() {
+        this.scene.resume('sceneA');
+        this.scene.stop();
+    });
 }
