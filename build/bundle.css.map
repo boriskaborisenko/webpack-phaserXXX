@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack:///./src/styles/index.scss (1)"],"names":[],"mappings":";AAAA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA,yBAAyB","file":"bundle.css","sourcesContent":["body, html {\n  overflow: hidden;\n  margin: 0;\n  padding: 0;\n  width: 100%;\n  height: 100%;\n  font-family: 'Paytone One';\n  background: #eee;\n  background-size: cover; }\n"],"sourceRoot":""}
